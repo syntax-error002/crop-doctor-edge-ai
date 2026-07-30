@@ -1,0 +1,15 @@
+[{"stream_name":"stderr","time":17.795724479,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":17.796467978,"data":"  File \"/kaggle/src/script.py\", line 149, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":17.796480932,"data":"    main()\n"}
+,{"stream_name":"stderr","time":17.796485687,"data":"  File \"/kaggle/src/script.py\", line 46, in main\n"}
+,{"stream_name":"stderr","time":17.79648988,"data":"    if not os.path.exists(DATASET_PATH):\n"}
+,{"stream_name":"stderr","time":17.796494948,"data":"                          ^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":17.796501649,"data":"UnboundLocalError: cannot access local variable 'DATASET_PATH' where it is not associated with a value\n"}
+,{"stream_name":"stdout","time":17.795695035,"data":"Checking dataset paths...\n"}
+,{"stream_name":"stderr","time":20.525263299,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":20.525290078,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":20.748970517,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":20.749017347,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":21.890162179,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":22.652702761,"data":"[NbConvertApp] Writing 297079 bytes to __results__.html\n"}
+]

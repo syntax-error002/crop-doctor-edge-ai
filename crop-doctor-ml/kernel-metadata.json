@@ -1,0 +1,15 @@
+{
+  "id": "shaswat06/crop-disease-efficientnetv2-hackathon",
+  "title": "Crop Disease EfficientNetV2 Hackathon",
+  "code_file": "train_model.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": [
+    "nirmalsankalana/crop-pest-and-disease-detection"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

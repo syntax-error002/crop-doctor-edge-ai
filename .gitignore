@@ -1,0 +1,9 @@
+node_modules/
+.env
+.DS_Store
+__pycache__/
+*.keras
+*.h5
+*.tflite
+venv/
+.expo/

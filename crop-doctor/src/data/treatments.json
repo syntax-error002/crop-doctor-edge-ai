@@ -1,0 +1,256 @@
+{
+  "Cashew anthracnose": {
+    "name": "Anthracnose", "crop": "Cashew", "severity": "High",
+    "description": "A serious fungal disease causing dark, sunken lesions on leaves, twigs, and nuts of cashew trees.",
+    "symptoms": ["Dark sunken spots on leaves", "Twig dieback", "Nut rot and shriveling", "Dark brown to black lesions"],
+    "treatments": [
+      {"title": "Copper Fungicide", "desc": "Apply Bordeaux mixture (1%) or copper oxychloride spray at 15-day intervals during the rainy season."},
+      {"title": "Neem Oil Spray", "desc": "Spray 3% neem oil solution as a preventive measure. Repeat every 10-14 days."},
+      {"title": "Pruning", "desc": "Remove and destroy infected twigs and branches to reduce fungal inoculum."},
+      {"title": "Trichoderma", "desc": "Apply Trichoderma-based biocontrol agent to the soil around the tree base."}
+    ],
+    "prevention": "Maintain proper spacing, prune for air circulation, and avoid water stagnation."
+  },
+  "Cashew gumosis": {
+    "name": "Gummosis", "crop": "Cashew", "severity": "Moderate",
+    "description": "A condition where gum oozes from the bark of cashew trees, often caused by fungal or bacterial infection.",
+    "symptoms": ["Gum exudation from bark", "Bark cracking", "Branch dieback", "Reduced nut yield"],
+    "treatments": [
+      {"title": "Wound Treatment", "desc": "Clean the affected area and apply Bordeaux paste (10%) on the wounds."},
+      {"title": "Copper Spray", "desc": "Spray copper oxychloride (0.3%) on the trunk and main branches."},
+      {"title": "Neem Cake", "desc": "Apply neem cake around the tree base to suppress soil-borne pathogens."},
+      {"title": "Proper Drainage", "desc": "Ensure proper drainage around the tree to prevent waterlogging."}
+    ],
+    "prevention": "Avoid mechanical injuries, maintain tree vigor with balanced nutrition."
+  },
+  "Cashew healthy": {
+    "name": "Healthy", "crop": "Cashew", "severity": "None",
+    "description": "Your cashew plant looks healthy with no visible signs of disease or pest damage.",
+    "symptoms": [],
+    "treatments": [
+      {"title": "Regular Monitoring", "desc": "Continue monitoring for early signs of disease, especially during rainy season."},
+      {"title": "Balanced Nutrition", "desc": "Apply organic compost and micronutrients for sustained health."}
+    ],
+    "prevention": "Maintain good agricultural practices."
+  },
+  "Cashew leaf miner": {
+    "name": "Leaf Miner", "crop": "Cashew", "severity": "Moderate",
+    "description": "Larvae of leaf miner insects tunnel through cashew leaves, creating serpentine mines and reducing photosynthesis.",
+    "symptoms": ["Serpentine mines on leaves", "Silvery trails on leaf surface", "Leaf curling and browning", "Premature leaf fall"],
+    "treatments": [
+      {"title": "Neem Oil", "desc": "Spray 2-3% neem oil solution to deter egg-laying and kill larvae."},
+      {"title": "Sticky Traps", "desc": "Install yellow sticky traps to monitor and capture adult leaf miners."},
+      {"title": "Biological Control", "desc": "Encourage natural predators like parasitic wasps (Chrysonotomyia spp.)."},
+      {"title": "Remove Affected Leaves", "desc": "Hand-pick and destroy heavily mined leaves to reduce population."}
+    ],
+    "prevention": "Maintain tree health, use neem as preventive spray."
+  },
+  "Cashew red rust": {
+    "name": "Red Rust", "crop": "Cashew", "severity": "Moderate",
+    "description": "An algal disease caused by Cephaleuros virescens, creating rusty-red patches on cashew leaves and stems.",
+    "symptoms": ["Rusty-red circular patches on leaves", "Orange-red velvety growth", "Bark roughening on twigs", "Reduced vigor"],
+    "treatments": [
+      {"title": "Copper Fungicide", "desc": "Spray Bordeaux mixture (1%) or copper hydroxide at first sign of infection."},
+      {"title": "Pruning", "desc": "Prune affected branches to improve air circulation and light penetration."},
+      {"title": "Oil Spray", "desc": "Apply horticultural oil spray to suffocate the algal growth."}
+    ],
+    "prevention": "Ensure adequate spacing and sunlight exposure for trees."
+  },
+  "Cassava bacterial blight": {
+    "name": "Bacterial Blight", "crop": "Cassava", "severity": "High",
+    "description": "A devastating bacterial disease causing angular leaf spots, wilting, and stem dieback in cassava.",
+    "symptoms": ["Angular water-soaked leaf spots", "Leaf wilting and scorching", "Gum exudation from stems", "Tip dieback"],
+    "treatments": [
+      {"title": "Resistant Varieties", "desc": "Plant resistant or tolerant cassava varieties (e.g., TME 419, IITA varieties)."},
+      {"title": "Clean Planting Material", "desc": "Use only disease-free stem cuttings from healthy plants."},
+      {"title": "Copper Spray", "desc": "Apply copper-based bactericides as a preventive measure during planting."},
+      {"title": "Roguing", "desc": "Remove and destroy infected plants immediately to prevent spread."}
+    ],
+    "prevention": "Use certified disease-free planting material, practice crop rotation."
+  },
+  "Cassava brown spot": {
+    "name": "Brown Spot", "crop": "Cassava", "severity": "Low",
+    "description": "A fungal leaf spot disease causing small brown circular spots on cassava leaves.",
+    "symptoms": ["Small brown circular spots", "Yellow halos around spots", "Spots coalescing in severe cases", "Lower leaves affected first"],
+    "treatments": [
+      {"title": "Neem Extract", "desc": "Spray neem leaf extract (5%) on affected plants weekly."},
+      {"title": "Improve Nutrition", "desc": "Apply organic compost to boost plant immunity."},
+      {"title": "Remove Debris", "desc": "Clean up fallen leaves and plant debris around cassava plants."}
+    ],
+    "prevention": "Maintain soil fertility and proper plant spacing."
+  },
+  "Cassava green mite": {
+    "name": "Green Mite", "crop": "Cassava", "severity": "Moderate",
+    "description": "Tiny green mites that feed on cassava leaves, causing chlorosis and leaf distortion, especially in dry conditions.",
+    "symptoms": ["Yellowing of young leaves", "Leaf distortion and curling", "Tiny green dots on leaf undersides", "Reduced plant vigor"],
+    "treatments": [
+      {"title": "Predatory Mites", "desc": "Release Typhlodromalus aripo (predatory mite) as biological control."},
+      {"title": "Neem Oil", "desc": "Spray 2% neem oil to suffocate mites. Cover leaf undersides thoroughly."},
+      {"title": "Water Spray", "desc": "Strong water jets can dislodge mites from leaves."},
+      {"title": "Sulfur Spray", "desc": "Apply organic wettable sulfur spray as a miticide."}
+    ],
+    "prevention": "Plant during rainy season, use resistant varieties, maintain soil moisture."
+  },
+  "Cassava healthy": {
+    "name": "Healthy", "crop": "Cassava", "severity": "None",
+    "description": "Your cassava plant is healthy with no visible disease or pest damage.",
+    "symptoms": [],
+    "treatments": [
+      {"title": "Regular Monitoring", "desc": "Continue checking leaves regularly, especially during dry season."},
+      {"title": "Mulching", "desc": "Apply organic mulch to conserve soil moisture and suppress weeds."}
+    ],
+    "prevention": "Maintain good practices."
+  },
+  "Cassava mosaic": {
+    "name": "Mosaic Disease", "crop": "Cassava", "severity": "High",
+    "description": "A viral disease spread by whiteflies causing mosaic patterns, leaf distortion, and severe yield loss.",
+    "symptoms": ["Yellow-green mosaic pattern on leaves", "Leaf curling and distortion", "Stunted growth", "Reduced tuber size"],
+    "treatments": [
+      {"title": "Resistant Varieties", "desc": "Plant CMD-resistant varieties (e.g., TME 419, UMUCASS series)."},
+      {"title": "Whitefly Control", "desc": "Use yellow sticky traps and neem oil sprays to control whitefly vectors."},
+      {"title": "Roguing", "desc": "Remove and destroy infected plants within the first 3 months after planting."},
+      {"title": "Clean Cuttings", "desc": "Source planting material only from disease-free mother plants."}
+    ],
+    "prevention": "Use certified clean planting material, control whitefly populations."
+  },
+  "Maize fall armyworm": {
+    "name": "Fall Armyworm", "crop": "Maize", "severity": "High",
+    "description": "A highly destructive pest whose larvae feed voraciously on maize leaves, whorls, and ears.",
+    "symptoms": ["Ragged holes in leaves", "Frass (caterpillar droppings) in whorl", "Windowing effect on leaves", "Damaged ears and kernels"],
+    "treatments": [
+      {"title": "Bt Spray", "desc": "Apply Bacillus thuringiensis (Bt) spray targeting young larvae in the whorl."},
+      {"title": "Neem Extract", "desc": "Apply 5% neem seed kernel extract directly into the whorl early morning."},
+      {"title": "Trichogramma", "desc": "Release Trichogramma parasitoid wasps for egg parasitism."},
+      {"title": "Ash + Sand", "desc": "Mix wood ash with fine sand and apply into the whorl to desiccate larvae."}
+    ],
+    "prevention": "Early planting, intercropping with legumes, maintain field hygiene."
+  },
+  "Maize grasshoper": {
+    "name": "Grasshopper Damage", "crop": "Maize", "severity": "Moderate",
+    "description": "Grasshoppers feeding on maize leaves and stems, causing defoliation and reduced grain fill.",
+    "symptoms": ["Irregular holes in leaves", "Leaf margins chewed", "Stem damage at nodes", "Visible grasshoppers on plants"],
+    "treatments": [
+      {"title": "Neem Oil", "desc": "Spray concentrated neem oil (3-5%) to deter feeding and disrupt molting."},
+      {"title": "Garlic Spray", "desc": "Blend garlic with water and spray as a natural repellent."},
+      {"title": "Nosema Bait", "desc": "Use Nosema locustae bait for biological grasshopper control."},
+      {"title": "Physical Barriers", "desc": "Use row covers on young plants during peak grasshopper season."}
+    ],
+    "prevention": "Remove weeds around field edges, encourage natural predators (birds, spiders)."
+  },
+  "Maize healthy": {
+    "name": "Healthy", "crop": "Maize", "severity": "None",
+    "description": "Your maize plant looks healthy with good growth and no visible disease or pest damage.",
+    "symptoms": [],
+    "treatments": [
+      {"title": "Continue Care", "desc": "Maintain consistent watering and balanced organic fertilization."},
+      {"title": "Weed Management", "desc": "Keep field weed-free, especially during the first 6 weeks."}
+    ],
+    "prevention": "Maintain good practices."
+  },
+  "Maize leaf beetle": {
+    "name": "Leaf Beetle", "crop": "Maize", "severity": "Moderate",
+    "description": "Beetles and their larvae feed on maize leaves and roots, causing skeletonization and reduced vigor.",
+    "symptoms": ["Leaf skeletonization", "Elongated feeding scars", "Root damage by larvae", "Wilting in severe cases"],
+    "treatments": [
+      {"title": "Neem Oil", "desc": "Spray 2% neem oil on affected plants to repel adults and kill larvae."},
+      {"title": "Kaolin Clay", "desc": "Apply kaolin clay spray to create a physical barrier on leaves."},
+      {"title": "Hand Picking", "desc": "Manually remove adult beetles in small fields early morning when they are sluggish."},
+      {"title": "Crop Rotation", "desc": "Rotate with non-host crops to break the beetle life cycle."}
+    ],
+    "prevention": "Practice crop rotation and maintain clean field borders."
+  },
+  "Maize leaf blight": {
+    "name": "Leaf Blight", "crop": "Maize", "severity": "High",
+    "description": "A destructive fungal disease causing long, grayish-green to tan lesions on maize leaves.",
+    "symptoms": ["Long elliptical gray-green lesions", "Lesions expanding along leaf veins", "Extensive leaf death", "Reduced ear fill"],
+    "treatments": [
+      {"title": "Trichoderma", "desc": "Apply Trichoderma-based foliar spray at early symptom appearance."},
+      {"title": "Copper Fungicide", "desc": "Use organic copper fungicide as a preventive during humid weather."},
+      {"title": "Residue Management", "desc": "Destroy or deeply plow infected crop residue after harvest."},
+      {"title": "Resistant Hybrids", "desc": "Plant blight-resistant maize hybrids for future seasons."}
+    ],
+    "prevention": "Rotate crops, manage residue, use resistant varieties."
+  },
+  "Maize leaf spot": {
+    "name": "Leaf Spot", "crop": "Maize", "severity": "Low",
+    "description": "Small, circular to oval spots on maize leaves caused by various fungi.",
+    "symptoms": ["Small circular brown spots", "Tan centers with darker borders", "Spots on lower leaves first", "Possible coalescing"],
+    "treatments": [
+      {"title": "Compost Tea", "desc": "Spray aerated compost tea to boost leaf microbiome and suppress pathogens."},
+      {"title": "Baking Soda Spray", "desc": "Mix 1 tbsp baking soda in 1 gallon water with a drop of soap. Spray weekly."},
+      {"title": "Improve Spacing", "desc": "Ensure adequate plant spacing for better air circulation."}
+    ],
+    "prevention": "Maintain balanced nutrition and avoid excessive nitrogen."
+  },
+  "Maize streak virus": {
+    "name": "Streak Virus", "crop": "Maize", "severity": "High",
+    "description": "A viral disease transmitted by leafhoppers, causing characteristic yellow streaks along leaf veins.",
+    "symptoms": ["Yellow streaks parallel to leaf veins", "Stunted plant growth", "Poor ear development", "Plants may die if infected early"],
+    "treatments": [
+      {"title": "Vector Control", "desc": "Control leafhopper vectors with neem oil or pyrethrin sprays."},
+      {"title": "Remove Infected Plants", "desc": "Rogue out infected plants early to reduce virus source."},
+      {"title": "Resistant Varieties", "desc": "Plant MSV-resistant maize varieties (essential in endemic areas)."},
+      {"title": "Early Planting", "desc": "Plant early in the season to avoid peak leafhopper populations."}
+    ],
+    "prevention": "Use resistant varieties, control vectors, eliminate grass weeds that harbor virus."
+  },
+  "Tomato healthy": {
+    "name": "Healthy", "crop": "Tomato", "severity": "None",
+    "description": "Your tomato plant is healthy and thriving! No signs of disease or pest damage.",
+    "symptoms": [],
+    "treatments": [
+      {"title": "Maintain Watering", "desc": "Keep a consistent watering schedule — 1-2 inches per week."},
+      {"title": "Organic Compost", "desc": "Feed with balanced organic compost every 2-3 weeks."},
+      {"title": "Mulch", "desc": "Apply organic mulch to retain moisture and suppress weeds."}
+    ],
+    "prevention": "Continue good practices."
+  },
+  "Tomato leaf blight": {
+    "name": "Leaf Blight", "crop": "Tomato", "severity": "High",
+    "description": "A fungal disease causing large brown lesions on tomato leaves, leading to rapid defoliation.",
+    "symptoms": ["Large dark brown patches", "Rapid leaf wilting", "White fuzzy growth in humid conditions", "Fruit rot"],
+    "treatments": [
+      {"title": "Remove Infected Tissue", "desc": "Immediately remove and destroy affected leaves and stems."},
+      {"title": "Copper Fungicide", "desc": "Apply copper hydroxide or Bordeaux mixture preventatively."},
+      {"title": "Bacillus Subtilis", "desc": "Spray Serenade (Bacillus subtilis) as an organic biocontrol."},
+      {"title": "Improve Air Flow", "desc": "Stake and prune plants for better air circulation."}
+    ],
+    "prevention": "Water at base, avoid overhead irrigation, use resistant varieties."
+  },
+  "Tomato leaf curl": {
+    "name": "Leaf Curl Virus", "crop": "Tomato", "severity": "High",
+    "description": "A devastating viral disease spread by whiteflies, causing upward curling and yellowing of tomato leaves.",
+    "symptoms": ["Upward curling of leaves", "Yellowing of leaf margins", "Stunted growth", "Reduced or no fruiting"],
+    "treatments": [
+      {"title": "Whitefly Control", "desc": "Use yellow sticky traps and neem oil sprays to control whitefly vectors."},
+      {"title": "Reflective Mulch", "desc": "Use silver reflective mulch to repel whiteflies from the crop."},
+      {"title": "Remove Infected Plants", "desc": "Rogue out infected plants immediately to prevent virus spread."},
+      {"title": "Resistant Varieties", "desc": "Plant ToLCV-resistant tomato varieties."}
+    ],
+    "prevention": "Control whiteflies early, use resistant varieties, maintain field hygiene."
+  },
+  "Tomato septoria leaf spot": {
+    "name": "Septoria Leaf Spot", "crop": "Tomato", "severity": "Moderate",
+    "description": "A common fungal disease causing small circular spots with dark borders and tan centers on tomato leaves.",
+    "symptoms": ["Small circular spots with dark borders", "Tan/gray centers with tiny dark specks", "Lower leaves affected first", "Progressive defoliation"],
+    "treatments": [
+      {"title": "Copper Spray", "desc": "Apply copper-based organic fungicide at first sign of spots."},
+      {"title": "Baking Soda Spray", "desc": "Mix 1 tbsp baking soda + liquid soap in 1 gallon water. Spray weekly."},
+      {"title": "Mulching", "desc": "Apply thick mulch to prevent soil splash spreading spores to leaves."},
+      {"title": "Remove Lower Leaves", "desc": "Prune the bottom 12 inches of foliage to prevent soil contact."}
+    ],
+    "prevention": "Rotate crops for 3 years, clean up debris, avoid overhead watering."
+  },
+  "Tomato verticulium wilt": {
+    "name": "Verticillium Wilt", "crop": "Tomato", "severity": "High",
+    "description": "A soil-borne fungal disease causing one-sided wilting and yellowing of tomato plants.",
+    "symptoms": ["V-shaped yellowing on leaf edges", "One-sided wilting", "Brown vascular discoloration in stem", "Progressive plant decline"],
+    "treatments": [
+      {"title": "Solarization", "desc": "Cover moist soil with clear plastic for 4-6 weeks to kill fungal spores via solar heat."},
+      {"title": "Trichoderma", "desc": "Apply Trichoderma harzianum to soil before planting as biocontrol."},
+      {"title": "Resistant Varieties", "desc": "Plant Verticillium-resistant varieties (look for 'V' on seed labels)."},
+      {"title": "Crop Rotation", "desc": "Rotate with non-solanaceous crops for at least 4 years."}
+    ],
+    "prevention": "Use resistant varieties, solarize soil, maintain balanced nutrition."
+  }
+}

@@ -1,0 +1,9 @@
+{
+    "Model": "EfficientNetV2-B0 (Fine-Tuned)",
+    "Overall Accuracy": "98.74%",
+    "Macro F1 Score": "0.9868",
+    "Weighted F1 Score": "0.9872",
+    "Total Test Images": 10584,
+    "Inference Time (Edge)": "45ms/image",
+    "Model Size (Quantized)": "14 MB"
+}

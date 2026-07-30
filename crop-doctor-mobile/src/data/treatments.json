@@ -1,0 +1,139 @@
+{
+  "Tomato___Bacterial_spot": {
+    "name": "Bacterial Spot",
+    "crop": "Tomato",
+    "severity": "Moderate",
+    "description": "A bacterial disease causing small, water-soaked spots on leaves and fruit, leading to defoliation and sunscald.",
+    "symptoms": ["Dark brown spots on leaves", "Water-soaked lesions on fruit", "Yellowing around spots", "Premature leaf drop"],
+    "treatments": [
+      {"title": "Copper Spray", "desc": "Apply copper-based organic fungicide early morning or late evening. Repeat every 7-10 days."},
+      {"title": "Neem Oil", "desc": "Mix 2 tablespoons neem oil per gallon of water. Spray on affected areas weekly."},
+      {"title": "Crop Rotation", "desc": "Rotate crops and avoid planting tomatoes in the same spot for at least 3 years."},
+      {"title": "Air Circulation", "desc": "Prune lower branches and ensure proper plant spacing (18-24 inches apart)."}
+    ],
+    "prevention": "Use disease-free seeds, avoid overhead irrigation, and remove infected debris."
+  },
+  "Tomato___Late_blight": {
+    "name": "Late Blight",
+    "crop": "Tomato",
+    "severity": "High",
+    "description": "A highly destructive oomycete disease causing large, dark, water-soaked lesions on leaves and stems.",
+    "symptoms": ["Large dark brown patches", "White fuzzy growth on leaf undersides", "Rapid wilting", "Brown fruit lesions"],
+    "treatments": [
+      {"title": "Remove Infected Plants", "desc": "Immediately destroy infected plants to prevent spore spread. Do NOT compost them."},
+      {"title": "Copper Fungicide", "desc": "Use fixed copper sprays as a preventative measure before symptoms appear."},
+      {"title": "Bacillus Subtilis", "desc": "Apply biological control agent Bacillus subtilis (Serenade) as an organic alternative."},
+      {"title": "Resistant Varieties", "desc": "Plant resistant varieties like Mountain Magic, Defiant, or Iron Lady."}
+    ],
+    "prevention": "Keep foliage dry, water at base, and use resistant cultivars."
+  },
+  "Tomato___Early_blight": {
+    "name": "Early Blight",
+    "crop": "Tomato",
+    "severity": "Moderate",
+    "description": "A fungal disease that causes dark concentric rings on older leaves, leading to premature defoliation.",
+    "symptoms": ["Concentric dark rings (target spots)", "Yellowing around lesions", "Lower leaves affected first", "Stem cankers"],
+    "treatments": [
+      {"title": "Compost Tea", "desc": "Brew and spray compost tea to boost plant immunity and add beneficial microbes."},
+      {"title": "Baking Soda Spray", "desc": "Mix 1 tbsp baking soda + 1 tsp liquid soap in 1 gallon water. Spray weekly."},
+      {"title": "Mulching", "desc": "Apply 3-4 inches of organic mulch to prevent soil splash spreading spores."},
+      {"title": "Pruning", "desc": "Remove affected lower leaves to improve air circulation."}
+    ],
+    "prevention": "Clean up all debris at season end, rotate crops, and use drip irrigation."
+  },
+  "Tomato___healthy": {
+    "name": "Healthy",
+    "crop": "Tomato",
+    "severity": "None",
+    "description": "Your tomato plant looks healthy and free of common diseases. Great job!",
+    "symptoms": [],
+    "treatments": [
+      {"title": "Maintain Watering", "desc": "Keep a consistent watering schedule — 1-2 inches per week."},
+      {"title": "Organic Compost", "desc": "Feed with balanced organic compost every 2-3 weeks during growing season."},
+      {"title": "Mulch", "desc": "Use organic mulch to retain moisture and suppress weeds."}
+    ],
+    "prevention": "Continue good practices to keep your plants thriving."
+  },
+  "Potato___Early_blight": {
+    "name": "Early Blight",
+    "crop": "Potato",
+    "severity": "Moderate",
+    "description": "A fungal disease causing concentric dark rings on older leaves, leading to yellowing and premature dropping.",
+    "symptoms": ["Dark concentric rings on leaves", "Yellowing and wilting", "Tuber lesions", "Premature defoliation"],
+    "treatments": [
+      {"title": "Bacillus Subtilis", "desc": "Apply Bacillus subtilis organic spray as a biocontrol measure."},
+      {"title": "Copper Fungicide", "desc": "Use organic copper-based fungicide at first sign of symptoms."},
+      {"title": "Avoid Overhead Irrigation", "desc": "Water at the base to keep leaves dry and prevent spore spread."},
+      {"title": "Debris Cleanup", "desc": "Remove all plant debris at end of season to reduce overwintering spores."}
+    ],
+    "prevention": "Use certified disease-free seed potatoes and practice 3-year crop rotation."
+  },
+  "Potato___Late_blight": {
+    "name": "Late Blight",
+    "crop": "Potato",
+    "severity": "High",
+    "description": "The same devastating disease that caused the Irish Potato Famine. Rapidly destroys foliage and tubers.",
+    "symptoms": ["Water-soaked leaf spots", "White mold on leaf undersides", "Rapidly spreading brown areas", "Rotten tubers"],
+    "treatments": [
+      {"title": "Immediate Destruction", "desc": "Remove and burn infected plants immediately. Do NOT compost."},
+      {"title": "Copper Spray", "desc": "Apply copper hydroxide or copper sulfate preventatively in wet weather."},
+      {"title": "Hilling", "desc": "Hill soil high around plants to protect tubers from spore contamination."},
+      {"title": "Harvest Early", "desc": "If blight is present, harvest tubers early to prevent tuber infection."}
+    ],
+    "prevention": "Plant resistant varieties, avoid irrigation from above, ensure good drainage."
+  },
+  "Potato___healthy": {
+    "name": "Healthy",
+    "crop": "Potato",
+    "severity": "None",
+    "description": "Your potato plant is healthy and thriving.",
+    "symptoms": [],
+    "treatments": [
+      {"title": "Continue Hilling", "desc": "Keep hilling soil around the base to protect growing tubers."},
+      {"title": "Consistent Moisture", "desc": "Provide 1-2 inches of water per week, especially during tuber formation."}
+    ],
+    "prevention": "Maintain good practices."
+  },
+  "Corn___Common_rust": {
+    "name": "Common Rust",
+    "crop": "Corn",
+    "severity": "Moderate",
+    "description": "A fungal disease producing small, reddish-brown pustules on both leaf surfaces.",
+    "symptoms": ["Small reddish-brown pustules", "Powdery spores when rubbed", "Chlorotic halos around pustules", "Premature leaf death in severe cases"],
+    "treatments": [
+      {"title": "Sulfur Spray", "desc": "Apply organic sulfur-based fungicide at first sign of pustules."},
+      {"title": "Neem Oil", "desc": "Spray neem oil solution weekly as both preventive and curative measure."},
+      {"title": "Remove Infected Leaves", "desc": "Hand-pick and destroy heavily infected leaves."},
+      {"title": "Resistant Hybrids", "desc": "Plant rust-resistant corn hybrids for future planting."}
+    ],
+    "prevention": "Plant early, use resistant varieties, and maintain balanced nutrition."
+  },
+  "Rice___Leaf_blast": {
+    "name": "Leaf Blast",
+    "crop": "Rice",
+    "severity": "High",
+    "description": "A devastating fungal disease causing diamond-shaped lesions on leaves, reducing photosynthetic area.",
+    "symptoms": ["Diamond-shaped gray lesions", "Brown borders on spots", "Lesions expanding rapidly", "Node and neck infection"],
+    "treatments": [
+      {"title": "Trichoderma", "desc": "Apply Trichoderma-based biocontrol agents as seed treatment and foliar spray."},
+      {"title": "Silicon Application", "desc": "Apply potassium silicate to strengthen cell walls against fungal penetration."},
+      {"title": "Balanced Nitrogen", "desc": "Avoid excessive nitrogen fertilization which increases susceptibility."},
+      {"title": "Water Management", "desc": "Maintain shallow flooding and avoid drought stress."}
+    ],
+    "prevention": "Use resistant varieties, balanced fertilization, and proper water management."
+  },
+  "Wheat___Septoria": {
+    "name": "Septoria Leaf Blotch",
+    "crop": "Wheat",
+    "severity": "Moderate",
+    "description": "A fungal disease causing tan-brown lesions with dark pycnidia on wheat leaves.",
+    "symptoms": ["Tan to brown irregular lesions", "Dark specks within lesions", "Progressive upward spread", "Premature leaf death"],
+    "treatments": [
+      {"title": "Crop Residue Management", "desc": "Plow under infected crop residue to reduce inoculum."},
+      {"title": "Copper Spray", "desc": "Apply copper-based fungicide at early symptoms."},
+      {"title": "Resistant Varieties", "desc": "Plant Septoria-resistant wheat cultivars."},
+      {"title": "Seed Treatment", "desc": "Use Trichoderma-treated seed for next planting cycle."}
+    ],
+    "prevention": "Rotate crops for 2+ years, manage residue, and use certified seed."
+  }
+}

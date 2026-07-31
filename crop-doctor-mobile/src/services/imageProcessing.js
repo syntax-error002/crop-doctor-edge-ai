@@ -25,6 +25,7 @@ export const analyzeImage = async (imageUri) => {
       return {
         diseaseId: data.diseaseId,
         confidence: data.confidence,
+        heatmapBase64: data.heatmapBase64,
       };
     } else {
       throw new Error('API returned non-200 status');

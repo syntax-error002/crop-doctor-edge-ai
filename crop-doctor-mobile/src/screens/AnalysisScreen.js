@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { analyzeImage } from '../services/imageProcessing';
 
 export default function AnalysisScreen({ route, navigation }) {
-  const { imageUri } = route.params || {};
+  const { imageUri, locationName, temp } = route.params || {};
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const scanLineAnim = useRef(new Animated.Value(0)).current;
 
@@ -29,7 +29,7 @@ export default function AnalysisScreen({ route, navigation }) {
     const runInference = async () => {
       try {
         const result = await analyzeImage(imageUri);
-        navigation.replace('Results', { ...result, imageUri });
+        navigation.replace('Results', { ...result, imageUri, locationName, temp });
       } catch (e) {
         alert("Failed to analyze image. Ensure backend is running.");
         navigation.goBack();

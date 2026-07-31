@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { supabase } from '../lib/supabase';
 
 const { width } = Dimensions.get('window');
 
@@ -25,15 +26,24 @@ export default function HomeScreen({ navigation }) {
     { id: 3, name: 'Wheat', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=200&auto=format&fit=crop' }
   ]);
 
-  // Load Recent Scans
+  // Load Recent Scans from Supabase
   useFocusEffect(
     useCallback(() => {
       const loadScans = async () => {
         try {
-          const saved = await AsyncStorage.getItem('recentScans');
-          if (saved) setRecentScans(JSON.parse(saved));
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+
+          const { data, error } = await supabase
+            .from('scans')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('date', { ascending: false });
+
+          if (error) throw error;
+          setRecentScans(data || []);
         } catch (e) {
-          console.error('Failed to load scans', e);
+          console.error('Failed to load scans from Supabase', e);
         }
       };
       loadScans();
@@ -78,7 +88,11 @@ export default function HomeScreen({ navigation }) {
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      navigation.navigate('Analysis', { imageUri: result.assets[0].uri });
+      navigation.navigate('Analysis', { 
+        imageUri: result.assets[0].uri,
+        locationName,
+        temp: weather?.temp || 'unknown'
+      });
     }
   };
 
@@ -213,7 +227,7 @@ export default function HomeScreen({ navigation }) {
           <TouchableOpacity style={styles.navItem}>
             <Ionicons name="heart-outline" size={24} color="#9ca3af" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
+          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Community')}>
             <Ionicons name="chatbubble-outline" size={24} color="#9ca3af" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.navItem}>

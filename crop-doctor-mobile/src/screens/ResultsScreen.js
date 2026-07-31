@@ -1,13 +1,18 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions, Alert, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '../lib/supabase';
 import treatmentsData from '../data/treatments.json';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function ResultsScreen({ route, navigation }) {
-  const { diseaseId = 'Unknown', confidence = 0.95, imageUri: passedImageUri } = route.params || {};
+  const { diseaseId = 'Unknown', confidence = 0.95, imageUri: passedImageUri, heatmapBase64, locationName = 'Unknown', temp = 'Unknown' } = route.params || {};
+  
+  const [showXAI, setShowXAI] = useState(false);
+  const [aiTreatment, setAiTreatment] = useState(null);
+  const [loadingAI, setLoadingAI] = useState(true);
   
   // Normalize by replacing spaces with underscores and lowercasing for comparison
   const normalizedSearchId = diseaseId.toLowerCase().replace(/ /g, '_').replace(/_+/g, '_');
@@ -17,11 +22,10 @@ export default function ResultsScreen({ route, navigation }) {
     return normalizedKey === normalizedSearchId || normalizedKey.includes(normalizedSearchId) || normalizedSearchId.includes(normalizedKey);
   });
   
-  const isHealthy = diseaseId.toLowerCase().includes('healthy');
-  
   // Create a dynamic fallback if not found in treatments.json
   const cropParts = diseaseId.split(' ');
   const fallbackCrop = cropParts[0];
+  const isHealthy = diseaseId.toLowerCase().includes('healthy');
   const fallbackName = cropParts.slice(1).join(' ') || (isHealthy ? 'Healthy' : 'Unknown Condition');
 
   const diseaseInfo = foundKey ? treatmentsData[foundKey] : {
@@ -33,29 +37,64 @@ export default function ResultsScreen({ route, navigation }) {
     treatments: [],
     prevention: isHealthy ? 'Maintain current healthy farming practices.' : 'Monitor crops regularly and ensure proper watering and soil nutrition.'
   };
+
+  useEffect(() => {
+    const fetchRAG = async () => {
+      if (isHealthy) {
+        setLoadingAI(false);
+        return;
+      }
+      
+      const baseTreatment = diseaseInfo.treatments && diseaseInfo.treatments.length > 0 ? diseaseInfo.treatments.map(t => t.desc).join(' ') : 'Standard agricultural care';
+      const basePrevention = diseaseInfo.prevention;
+      const prompt = `Act as an expert agronomist. The crop was diagnosed with ${diseaseInfo.name}. Here is standard baseline info:\nTreatment: ${baseTreatment}\nPrevention: ${basePrevention}\n\nThe user is in ${locationName} and the current temperature is ${temp}. Generate a highly personalized, practical action plan (3 short paragraphs) to save this crop based on this local weather and the provided baseline info. Use a warm, professional tone without markdown asterisks so it looks clean on a mobile UI.`;
+
+      try {
+        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${process.env.EXPO_PUBLIC_GEMINI_API_KEY}`;
+        const response = await fetch(GEMINI_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+        const data = await response.json();
+        const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        
+        if (generatedText) setAiTreatment(generatedText);
+        else setAiTreatment('AI could not generate a localized guide. Fallback to standard treatment.');
+      } catch (err) {
+        console.error(err);
+        setAiTreatment('AI could not generate a localized guide. Fallback to standard treatment.');
+      } finally {
+        setLoadingAI(false);
+      }
+    };
+    
+    fetchRAG();
+  }, []);
   
   const confPercent = Math.round(confidence * 100);
-  
-  // Use the scanned image, fallback to placeholder if accessed without a scan
   const imageUri = passedImageUri || 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?q=80&w=800&auto=format&fit=crop';
 
   const handleSaveReport = async () => {
     try {
-      const newScan = {
-        id: Date.now().toString(),
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        Alert.alert('Authentication Required', 'Please log in to save reports.');
+        return;
+      }
+      
+      const { error } = await supabase.from('scans').insert([{
+        user_id: user.id,
         title: diseaseInfo.crop,
         status: diseaseInfo.name,
         conf: `${confPercent}%`,
         img: imageUri,
         date: new Date().toISOString()
-      };
+      }]);
       
-      const existing = await AsyncStorage.getItem('recentScans');
-      const scans = existing ? JSON.parse(existing) : [];
-      scans.unshift(newScan);
+      if (error) throw error;
       
-      await AsyncStorage.setItem('recentScans', JSON.stringify(scans));
-      Alert.alert('Success', 'Report saved to your recent scans!');
+      Alert.alert('Success', 'Report saved to your cloud account!');
       navigation.navigate('Home');
     } catch (e) {
       console.error('Failed to save report', e);
@@ -79,7 +118,9 @@ export default function ResultsScreen({ route, navigation }) {
         <View style={styles.heroSection}>
           <View style={styles.imageWrapper}>
             <Image source={{ uri: imageUri }} style={styles.heroImage} />
-            <View style={styles.fadeOverlay} />
+            <View style={styles.imageOverlay}>
+              <Text style={styles.imageOverlayText}>AI Scanned</Text>
+            </View>
           </View>
           
           <View style={styles.sideStats}>
@@ -101,6 +142,11 @@ export default function ResultsScreen({ route, navigation }) {
             </View>
           </View>
         </View>
+
+        <TouchableOpacity style={styles.xaiButton} onPress={() => setShowXAI(true)}>
+          <Ionicons name="scan-circle" size={20} color="#fff" />
+          <Text style={styles.xaiButtonText}>View AI Heatmap</Text>
+        </TouchableOpacity>
 
         <View style={styles.detailsContainer}>
           <View style={styles.titleRow}>
@@ -125,16 +171,38 @@ export default function ResultsScreen({ route, navigation }) {
             </View>
           </View>
 
-          <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.descriptionText}>
-            {diseaseInfo.description} <Text style={styles.readMore}>Read more</Text>
-          </Text>
+          <Text style={styles.descriptionText}>{diseaseInfo.description}</Text>
+
+          <View style={styles.aiHeader}>
+            <Ionicons name="sparkles" size={16} color="#f59e0b" />
+            <Text style={styles.aiHeaderText}>AI + RAG Personalized Plan</Text>
+          </View>
+
+          {isHealthy ? (
+             <Text style={styles.sectionText}>Your crop looks great! No treatment needed. Keep up the good work.</Text>
+          ) : loadingAI ? (
+            <View style={styles.loadingBox}>
+              <ActivityIndicator size="small" color="#1a4314" />
+              <Text style={styles.loadingText}>Synthesizing local weather & botanical data...</Text>
+            </View>
+          ) : (
+            <Text style={styles.sectionText}>{aiTreatment}</Text>
+          )}
+
+          {!isHealthy && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Ionicons name="shield-checkmark" size={18} color="#1a4314" />
+                <Text style={styles.sectionTitle}>Standard Prevention</Text>
+              </View>
+              <Text style={styles.sectionText}>{diseaseInfo.prevention}</Text>
+            </>
+          )}
 
           {diseaseInfo.symptoms && diseaseInfo.symptoms.length > 0 && (
             <>
               <View style={styles.sectionTitleRow}>
                 <Text style={styles.sectionTitle}>Key Symptoms</Text>
-                <TouchableOpacity><Text style={styles.moreDetailsText}>More Details ⌄</Text></TouchableOpacity>
               </View>
               {diseaseInfo.symptoms.map((symp, idx) => (
                 <View key={idx} style={styles.symptomRow}>
@@ -144,36 +212,8 @@ export default function ResultsScreen({ route, navigation }) {
               ))}
             </>
           )}
-
-          {diseaseInfo.treatments && diseaseInfo.treatments.length > 0 && (
-            <>
-              <View style={styles.sectionTitleRow}>
-                <Text style={styles.sectionTitle}>Treatment Plan</Text>
-              </View>
-              {diseaseInfo.treatments.map((treatment, idx) => (
-                <View key={idx} style={styles.treatmentCard}>
-                  <View style={styles.treatmentIconBox}>
-                    <Ionicons name="leaf" size={20} color="#1a4314" />
-                  </View>
-                  <View style={styles.treatmentContent}>
-                    <Text style={styles.treatmentTitle}>{treatment.title}</Text>
-                    <Text style={styles.treatmentDesc}>{treatment.desc}</Text>
-                  </View>
-                </View>
-              ))}
-            </>
-          )}
-
-          {diseaseInfo.prevention && (
-            <>
-              <Text style={styles.sectionTitle}>Prevention</Text>
-              <View style={styles.preventionBox}>
-                <Ionicons name="shield-checkmark" size={20} color="#1a4314" style={{ marginTop: 2 }} />
-                <Text style={styles.preventionText}>{diseaseInfo.prevention}</Text>
-              </View>
-            </>
-          )}
         </View>
+        <View style={{ height: 100 }} />
       </ScrollView>
 
       {/* Sticky Bottom Bar */}
@@ -185,6 +225,42 @@ export default function ResultsScreen({ route, navigation }) {
           <Text style={styles.buyButtonText}>Save Report</Text>
         </TouchableOpacity>
       </View>
+
+      {/* XAI Modal */}
+      <Modal visible={showXAI} animationType="slide" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.closeModalButton} onPress={() => setShowXAI(false)}>
+              <Ionicons name="close" size={24} color="#111827" />
+            </TouchableOpacity>
+            
+            <Text style={styles.modalTitle}>Explainable AI (XAI)</Text>
+            <Text style={styles.modalDesc}>Model insights</Text>
+
+            <View style={styles.xaiFlow}>
+              <View style={styles.xaiStep}>
+                <Image source={{ uri: imageUri }} style={styles.xaiImage} />
+                <Text style={styles.xaiLabel}>Original Leaf</Text>
+              </View>
+              
+              <Ionicons name="arrow-down" size={24} color="#6b7280" style={{ marginVertical: 10 }} />
+              
+              <View style={styles.xaiStep}>
+                {heatmapBase64 ? (
+                  <Image source={{ uri: heatmapBase64 }} style={styles.xaiImage} />
+                ) : (
+                  <View style={[styles.xaiImage, { backgroundColor: '#e2e8f0', justifyContent: 'center', alignItems: 'center' }]}>
+                    <Text style={{color: '#64748b'}}>No Heatmap</Text>
+                  </View>
+                )}
+                <Text style={styles.xaiLabel}>Grad-CAM Heatmap</Text>
+              </View>
+            </View>
+            
+            <Text style={styles.modalFooterText}>The red regions indicate the specific disease lesions the EfficientNetV2 model used to make its prediction.</Text>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -199,14 +275,15 @@ const styles = StyleSheet.create({
   heroSection: { flexDirection: 'row', paddingHorizontal: 20, marginTop: 10, justifyContent: 'space-between' },
   imageWrapper: { width: width * 0.6, height: 320, borderRadius: 30, overflow: 'hidden' },
   heroImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-  fadeOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(249, 251, 242, 0.4)' },
+  imageOverlay: { position: 'absolute', top: 10, left: 10, backgroundColor: 'rgba(26, 67, 20, 0.8)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
+  imageOverlayText: { color: '#fff', fontSize: 10, fontWeight: '700' },
   
   sideStats: { width: width * 0.28, justifyContent: 'center', paddingVertical: 10, gap: 20 },
   statBox: { marginBottom: 5 },
   statLabel: { fontSize: 11, color: '#6b7280', marginBottom: 4, fontWeight: '500' },
   statValue: { fontSize: 15, fontWeight: '600', color: '#1a4314' },
 
-  detailsContainer: { paddingHorizontal: 20, marginTop: 15 },
+  detailsContainer: { backgroundColor: '#fff', borderRadius: 30, padding: 25, marginTop: 10, minHeight: height * 0.5, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 10, shadowOffset: { width: 0, height: -4 } },
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
   diseaseName: { fontSize: 26, fontWeight: '800', color: '#111827', flex: 1, paddingRight: 10 },
   priceTag: { fontSize: 20, fontWeight: '800', color: '#1a4314' },
@@ -216,9 +293,6 @@ const styles = StyleSheet.create({
   tagText: { fontSize: 12, color: '#4b5563', fontWeight: '600' },
   tagDivider: { width: 1, height: 12, backgroundColor: '#d1d5db', marginHorizontal: 12 },
 
-  sectionTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 15, marginBottom: 10 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#111827', marginBottom: 10, marginTop: 15 },
-  moreDetailsText: { fontSize: 13, fontWeight: '600', color: '#1a4314' },
   descriptionText: { fontSize: 14, color: '#6b7280', lineHeight: 24, marginBottom: 15 },
   readMore: { color: '#111827', fontWeight: '600', textDecorationLine: 'underline' },
   
@@ -237,6 +311,20 @@ const styles = StyleSheet.create({
 
   bottomBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#f9fbf2', flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 20, gap: 15, borderTopWidth: 1, borderTopColor: '#f3f4f6' },
   likeButton: { width: 60, height: 60, borderRadius: 20, backgroundColor: '#eef6e1', alignItems: 'center', justifyContent: 'center' },
-  buyButton: { flex: 1, height: 60, borderRadius: 20, backgroundColor: '#1a4314', alignItems: 'center', justifyContent: 'center', shadowColor: '#1a4314', shadowOpacity: 0.3, shadowRadius: 15, shadowOffset: { width: 0, height: 5 } },
+  buyButton: { flex: 1, backgroundColor: '#1a4314', height: 60, borderRadius: 20, alignItems: 'center', justifyContent: 'center', shadowColor: '#1a4314', shadowOpacity: 0.3, shadowRadius: 15, shadowOffset: { width: 0, height: 5 } },
   buyButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  
+  xaiButton: { flexDirection: 'row', backgroundColor: '#1a4314', alignSelf: 'flex-start', marginLeft: 20, marginTop: 15, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, alignItems: 'center', gap: 6, marginBottom: 20 },
+  xaiButtonText: { color: '#fff', fontSize: 13, fontWeight: '600' },
+  
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
+  modalContent: { width: '85%', backgroundColor: '#f9fbf2', borderRadius: 24, padding: 24, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 20 },
+  closeModalButton: { position: 'absolute', top: 15, right: 15, width: 32, height: 32, borderRadius: 16, backgroundColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center' },
+  modalTitle: { fontSize: 20, fontWeight: '800', color: '#1a4314', marginTop: 10, marginBottom: 4 },
+  modalDesc: { fontSize: 14, color: '#6b7280', fontWeight: '500', marginBottom: 20 },
+  xaiFlow: { alignItems: 'center', width: '100%' },
+  xaiStep: { alignItems: 'center' },
+  xaiImage: { width: 140, height: 140, borderRadius: 16, borderWidth: 2, borderColor: '#e2e8f0', resizeMode: 'cover' },
+  xaiLabel: { marginTop: 8, fontSize: 13, fontWeight: '700', color: '#111827' },
+  modalFooterText: { marginTop: 24, fontSize: 12, color: '#64748b', textAlign: 'center', lineHeight: 18, fontStyle: 'italic' },
 });

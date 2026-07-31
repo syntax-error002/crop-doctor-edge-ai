@@ -168,6 +168,13 @@ Upon receiving the highest probability class identifier, the system queries a st
 \subsection{Training Performance}
 The model converged rapidly due to transfer learning from ImageNet pre-trained weights. Over 20 epochs, the training accuracy reached 99.2\%, while the validation accuracy stabilized at 98.74\%, indicating excellent generalization and minimal overfitting.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{assets/graphs/training_history.png}
+    \caption{Training and Validation Accuracy/Loss curves over 20 epochs, demonstrating rapid convergence and stability.}
+    \label{fig:training_history}
+\end{figure}
+
 \subsection{Classification Metrics}
 Evaluation on an unseen testing holdout set yielded exceptional results across all 22 classes.
 \begin{itemize}
@@ -175,7 +182,22 @@ Evaluation on an unseen testing holdout set yielded exceptional results across a
     \item \textbf{Macro F1-Score}: 0.9868
     \item \textbf{Weighted F1-Score}: 0.9872
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{assets/graphs/f1_scores.png}
+    \caption{Per-class F1 Scores illustrating high precision and recall across all 22 crop disease profiles.}
+    \label{fig:f1_scores}
+\end{figure}
+
 The generated Confusion Matrix demonstrated a strong diagonal dominance. Misclassifications were exceedingly rare and primarily occurred between closely related pathogenic expressions (e.g., Early Blight vs. Late Blight in initial stages). 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{assets/graphs/confusion_matrix.png}
+    \caption{Normalized Confusion Matrix confirming strong diagonal dominance and minimal cross-class confusion.}
+    \label{fig:confusion_matrix}
+\end{figure}
 
 \subsection{Edge Deployment Metrics}
 The crucial metric for this study is edge feasibility. Testing the FastAPI inference pipeline on a standard local hardware node yielded an average end-to-end inference time of just \textbf{45 milliseconds per image}. The quantized model size of 14 MB ensures it can comfortably reside in the RAM of low-cost IoT devices or direct mobile deployment in future iterations.

@@ -1,28 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 import * as ImagePicker from 'expo-image-picker';
 
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
   const [activeFilter, setActiveFilter] = useState('All');
-  const filters = ['All', 'Maize', 'Tomato', 'Cashew', 'Cassava'];
-
-  const recentScans = [
-    { id: 1, title: 'Maize Field', status: 'Healthy', conf: '99%', temp: '22°C', img: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?q=80&w=600&auto=format&fit=crop' },
-    { id: 2, title: 'Tomato Plot', status: 'Leaf Curl', conf: '87%', temp: '25°C', img: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?q=80&w=600&auto=format&fit=crop' },
-  ];
+  const filters = ['All', 'Maize', 'Tomato', 'Cashew'];
+  const [recentScans, setRecentScans] = useState([]);
 
   const handleScan = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [3, 4],
       quality: 0.8,
     });
-    if (!result.canceled) {
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       navigation.navigate('Analysis', { imageUri: result.assets[0].uri });
     }
   };
@@ -30,174 +26,176 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.profileSection}>
-            <Image source={{ uri: 'https://i.pravatar.cc/150?img=33' }} style={styles.profilePic} />
+            <Image source={{ uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop' }} style={styles.profileImage} />
             <View>
-              <Text style={styles.greetingText}>Hello 👋</Text>
-              <Text style={styles.nameText}>Farmer Smith</Text>
+              <Text style={styles.helloText}>Hello 👋</Text>
+              <Text style={styles.nameText}>Hi Farmer</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.bellIcon}>
-            <Ionicons name="notifications-outline" size={24} color="#064e3b" />
+          <TouchableOpacity style={styles.bellButton}>
+            <Ionicons name="notifications-outline" size={20} color="#1a4314" />
           </TouchableOpacity>
         </View>
 
-        {/* Filters */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContainer}>
-          {filters.map((f) => (
-            <TouchableOpacity
-              key={f}
-              style={[styles.filterPill, activeFilter === f && styles.filterPillActive]}
-              onPress={() => setActiveFilter(f)}
+        {/* Filter Tabs */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContainer}>
+          {filters.map((filter) => (
+            <TouchableOpacity 
+              key={filter} 
+              style={[styles.filterPill, activeFilter === filter && styles.activeFilterPill]}
+              onPress={() => setActiveFilter(filter)}
             >
-              <Text style={[styles.filterText, activeFilter === f && styles.filterTextActive]}>{f}</Text>
+              <Text style={[styles.filterText, activeFilter === filter && styles.activeFilterText]}>
+                {filter}
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
-        {/* Main Scan Card (Glassmorphism) */}
-        <View style={styles.scanCardContainer}>
-          <View style={styles.scanCardBlur}>
-            <View style={styles.scanCardContent}>
-              <View style={styles.scanTextContainer}>
-                <Text style={styles.scanCardTitle}>Crop Health Overview</Text>
-                <Text style={styles.scanCardSub}>AI Diagnostic Scanner</Text>
-                
-                <View style={styles.statsRow}>
-                  <View style={styles.statBox}>
-                    <Ionicons name="sunny-outline" size={16} color="#f59e0b" />
-                    <Text style={styles.statLabel}>Light</Text>
-                    <Text style={styles.statValue}>High</Text>
-                  </View>
-                  <View style={styles.statBox}>
-                    <Ionicons name="water-outline" size={16} color="#3b82f6" />
-                    <Text style={styles.statLabel}>Humid</Text>
-                    <Text style={styles.statValue}>60%</Text>
-                  </View>
-                  <View style={styles.statBox}>
-                    <Ionicons name="thermometer-outline" size={16} color="#ef4444" />
-                    <Text style={styles.statLabel}>Temp</Text>
-                    <Text style={styles.statValue}>28°C</Text>
-                  </View>
-                </View>
+        {/* Hero Card */}
+        <TouchableOpacity style={styles.heroCard} onPress={handleScan}>
+          <View style={styles.heroContent}>
+            <Text style={styles.heroSubtitle}>AI Crop Doctor</Text>
+            <Text style={styles.heroTitle}>Start Diagnosis</Text>
+            
+            <View style={styles.heroStatsRow}>
+              <View style={styles.heroStatItem}>
+                <Ionicons name="sunny-outline" size={16} color="#f59e0b" />
+                <Text style={styles.heroStatLabel}>Light</Text>
+                <Text style={styles.heroStatValue}>20%</Text>
               </View>
-              <Image source={{ uri: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a?q=80&w=400&auto=format&fit=crop' }} style={styles.scanCardImage} />
+              <View style={styles.heroStatItem}>
+                <Ionicons name="water-outline" size={16} color="#3b82f6" />
+                <Text style={styles.heroStatLabel}>Humid</Text>
+                <Text style={styles.heroStatValue}>40%</Text>
+              </View>
+              <View style={styles.heroStatItem}>
+                <Ionicons name="thermometer-outline" size={16} color="#ef4444" />
+                <Text style={styles.heroStatLabel}>Temp</Text>
+                <Text style={styles.heroStatValue}>22°C</Text>
+              </View>
             </View>
-            <TouchableOpacity style={styles.scanButton} onPress={handleScan}>
-              <Ionicons name="scan-outline" size={20} color="#fff" />
-              <Text style={styles.scanButtonText}>Scan New Crop</Text>
-            </TouchableOpacity>
           </View>
+          <Image 
+            source={{ uri: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?q=80&w=600&auto=format&fit=crop' }} 
+            style={styles.heroImage} 
+          />
+        </TouchableOpacity>
+
+        {/* Section Title */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Recent Scans</Text>
+          <TouchableOpacity><Text style={styles.seeAllText}>See all</Text></TouchableOpacity>
         </View>
 
-        {/* Recent Scans Grid */}
-        <View style={styles.recentSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Scans</Text>
-            <TouchableOpacity><Text style={styles.seeAll}>See all</Text></TouchableOpacity>
-          </View>
-          
-          <View style={styles.gridContainer}>
-            {recentScans.map((scan) => (
+        {/* Grid */}
+        <View style={styles.gridContainer}>
+          {recentScans.length === 0 ? (
+            <View style={{ flex: 1, alignItems: 'center', paddingVertical: 20 }}>
+              <Text style={styles.emptyText}>No recent scans found.</Text>
+            </View>
+          ) : (
+            recentScans.map((scan) => (
               <TouchableOpacity key={scan.id} style={styles.gridCard} onPress={() => navigation.navigate('Results', { diseaseId: scan.status === 'Healthy' ? 'Maize healthy' : 'Tomato leaf curl', confidence: 0.95 })}>
                 <Image source={{ uri: scan.img }} style={styles.gridImage} />
                 <TouchableOpacity style={styles.heartIcon}>
-                  <Ionicons name="heart-outline" size={18} color="#064e3b" />
+                  <Ionicons name="heart-outline" size={18} color="#1a4314" />
                 </TouchableOpacity>
                 <View style={styles.gridDetails}>
-                  <View style={styles.gridBadgeRow}>
-                    <View style={styles.gridBadge}><Ionicons name="sunny" size={12} color="#f59e0b" /><Text style={styles.gridBadgeText}>{scan.temp}</Text></View>
-                    <View style={styles.gridBadge}><Ionicons name="analytics" size={12} color="#3b82f6" /><Text style={styles.gridBadgeText}>{scan.conf}</Text></View>
+                  <View style={styles.gridStatsRow}>
+                    <Ionicons name="sunny-outline" size={12} color="#f59e0b" />
+                    <Text style={styles.gridStatText}>20%</Text>
+                    <Ionicons name="water-outline" size={12} color="#3b82f6" style={{ marginLeft: 8 }}/>
+                    <Text style={styles.gridStatText}>99%</Text>
                   </View>
                   <Text style={styles.gridCardTitle}>{scan.title}</Text>
-                  <Text style={styles.gridCardSub}>{scan.status}</Text>
-                  <View style={styles.statusPill}>
-                    <Text style={styles.statusPillText}>View Report</Text>
+                  <View style={styles.gridBottomRow}>
+                    <Text style={styles.gridCardSub}>{scan.status}</Text>
+                    <View style={styles.pillBadge}>
+                      <Text style={styles.pillBadgeText}>{scan.conf}</Text>
+                    </View>
                   </View>
                 </View>
               </TouchableOpacity>
-            ))}
-          </View>
+            ))
+          )}
         </View>
-        <View style={{ height: 100 }} /> {/* Padding for tab bar */}
+        
+        <View style={{ height: 100 }} />
       </ScrollView>
 
-      {/* Floating Bottom Tab Bar */}
-      <View style={styles.floatingTabContainer}>
-        <BlurView intensity={80} tint="light" style={styles.floatingTab}>
-          <TouchableOpacity style={[styles.tabItem, styles.tabItemActive]}>
-            <Ionicons name="home" size={24} color="#fff" />
+      {/* Floating Bottom Navigation */}
+      <View style={styles.floatingNav}>
+        <View style={styles.navInner}>
+          <TouchableOpacity style={styles.navItemActive}>
+            <Ionicons name="home" size={20} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem}>
-            <Ionicons name="time-outline" size={24} color="#064e3b" />
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="heart-outline" size={24} color="#9ca3af" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItemCentral} onPress={handleScan}>
-            <Ionicons name="camera" size={28} color="#fff" />
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="chatbubble-outline" size={24} color="#9ca3af" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem}>
-            <Ionicons name="chatbubble-outline" size={24} color="#064e3b" />
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="person-outline" size={24} color="#9ca3af" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem}>
-            <Ionicons name="person-outline" size={24} color="#064e3b" />
-          </TouchableOpacity>
-        </BlurView>
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#f0fdf4' },
-  container: { padding: 20 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  profileSection: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  profilePic: { width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: '#fff' },
-  greetingText: { fontSize: 14, color: '#475569' },
-  nameText: { fontSize: 18, fontWeight: '700', color: '#064e3b' },
-  bellIcon: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10 },
+  safeArea: { flex: 1, backgroundColor: '#f9fbf2' },
+  container: { paddingBottom: 30 },
   
-  filterScroll: { marginBottom: 24, maxHeight: 40 },
-  filterContainer: { paddingRight: 20, gap: 10 },
-  filterPill: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, backgroundColor: '#fff', borderWidth: 1, borderColor: '#e2e8f0' },
-  filterPillActive: { backgroundColor: '#064e3b', borderColor: '#064e3b' },
-  filterText: { fontSize: 14, fontWeight: '500', color: '#475569' },
-  filterTextActive: { color: '#fff' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 15, paddingBottom: 15 },
+  profileSection: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  profileImage: { width: 44, height: 44, borderRadius: 22 },
+  helloText: { fontSize: 13, color: '#6b7280', fontWeight: '500' },
+  nameText: { fontSize: 18, fontWeight: '700', color: '#111827' },
+  bellButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } },
+  
+  filterContainer: { paddingHorizontal: 20, marginBottom: 25 },
+  filterPill: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, backgroundColor: '#eef6e1', marginRight: 10 },
+  activeFilterPill: { backgroundColor: '#1a4314' },
+  filterText: { fontSize: 14, fontWeight: '600', color: '#4b5563' },
+  activeFilterText: { color: '#fff' },
 
-  scanCardContainer: { marginBottom: 30, borderRadius: 24, backgroundColor: '#d1fae5', padding: 16, overflow: 'hidden' },
-  scanCardBlur: { borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.6)', padding: 16 },
-  scanCardContent: { flexDirection: 'row', justifyContent: 'space-between' },
-  scanTextContainer: { flex: 1, paddingRight: 10 },
-  scanCardTitle: { fontSize: 18, fontWeight: '700', color: '#064e3b', marginBottom: 4 },
-  scanCardSub: { fontSize: 13, color: '#047857', marginBottom: 16 },
-  statsRow: { flexDirection: 'row', gap: 10 },
-  statBox: { backgroundColor: '#fff', padding: 8, borderRadius: 12, alignItems: 'center', minWidth: 50 },
-  statLabel: { fontSize: 10, color: '#64748b', marginTop: 4 },
-  statValue: { fontSize: 12, fontWeight: '700', color: '#064e3b' },
-  scanCardImage: { width: 100, height: 140, borderRadius: 16, position: 'absolute', right: -10, top: -20 },
-  scanButton: { backgroundColor: '#064e3b', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 16, marginTop: 16 },
-  scanButtonText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  heroCard: { marginHorizontal: 20, backgroundColor: '#fff', borderRadius: 24, padding: 20, flexDirection: 'row', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, marginBottom: 30, overflow: 'hidden' },
+  heroContent: { flex: 1, zIndex: 2 },
+  heroSubtitle: { fontSize: 13, color: '#6b7280', marginBottom: 4, fontWeight: '500' },
+  heroTitle: { fontSize: 18, fontWeight: '700', color: '#1a4314', marginBottom: 20 },
+  heroStatsRow: { flexDirection: 'row', gap: 12 },
+  heroStatItem: { alignItems: 'center', backgroundColor: '#f8fafc', padding: 8, borderRadius: 12, minWidth: 46 },
+  heroStatLabel: { fontSize: 10, color: '#6b7280', marginTop: 4, marginBottom: 2 },
+  heroStatValue: { fontSize: 11, fontWeight: '700', color: '#111827' },
+  heroImage: { width: 120, height: 160, position: 'absolute', right: -20, bottom: -20, resizeMode: 'contain', zIndex: 1 },
 
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#064e3b' },
-  seeAll: { fontSize: 14, color: '#10b981', fontWeight: '600' },
-  gridContainer: { flexDirection: 'row', justifyContent: 'space-between' },
-  gridCard: { width: (width - 55) / 2, backgroundColor: '#fff', borderRadius: 20, padding: 10, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 10, elevation: 2 },
-  gridImage: { width: '100%', height: 120, borderRadius: 16, marginBottom: 10 },
-  heartIcon: { position: 'absolute', top: 18, right: 18, backgroundColor: 'rgba(255,255,255,0.8)', width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  gridDetails: { padding: 4 },
-  gridBadgeRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  gridBadge: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  gridBadgeText: { fontSize: 11, color: '#64748b', fontWeight: '600' },
-  gridCardTitle: { fontSize: 15, fontWeight: '700', color: '#064e3b', marginBottom: 2 },
-  gridCardSub: { fontSize: 12, color: '#64748b', marginBottom: 12 },
-  statusPill: { backgroundColor: '#064e3b', paddingVertical: 6, borderRadius: 10, alignItems: 'center' },
-  statusPillText: { color: '#fff', fontSize: 11, fontWeight: '600' },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 15 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
+  seeAllText: { fontSize: 14, fontWeight: '600', color: '#1a4314' },
 
-  floatingTabContainer: { position: 'absolute', bottom: 30, left: 20, right: 20, alignItems: 'center' },
-  floatingTab: { flexDirection: 'row', backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: 30, padding: 8, alignItems: 'center', justifyContent: 'space-between', width: '100%', overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.4)' },
-  tabItem: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  tabItemActive: { backgroundColor: '#064e3b' },
-  tabItemCentral: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#10b981', alignItems: 'center', justifyContent: 'center', transform: [{ translateY: -15 }], shadowColor: '#10b981', shadowOpacity: 0.4, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingHorizontal: 20 },
+  gridCard: { width: (width - 55) / 2, backgroundColor: '#eef6e1', borderRadius: 20, padding: 12, marginBottom: 15 },
+  gridImage: { width: '100%', height: 110, resizeMode: 'cover', borderRadius: 12, marginBottom: 10 },
+  heartIcon: { position: 'absolute', top: 20, right: 20, width: 28, height: 28, borderRadius: 14, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
+  gridDetails: { marginTop: 4 },
+  gridStatsRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
+  gridStatText: { fontSize: 11, color: '#6b7280', marginLeft: 4, fontWeight: '600' },
+  gridCardTitle: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 4 },
+  gridBottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  gridCardSub: { fontSize: 12, color: '#6b7280' },
+  pillBadge: { backgroundColor: '#1a4314', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10 },
+  pillBadgeText: { color: '#fff', fontSize: 10, fontWeight: '700' },
+  emptyText: { color: '#64748b', fontStyle: 'italic' },
+
+  floatingNav: { position: 'absolute', bottom: 30, left: 20, right: 20, alignItems: 'center' },
+  navInner: { flexDirection: 'row', backgroundColor: '#2d3748cc', borderRadius: 30, paddingVertical: 10, paddingHorizontal: 20, width: '80%', justifyContent: 'space-between', alignItems: 'center' },
+  navItem: { padding: 10 },
+  navItemActive: { backgroundColor: '#1a4314', padding: 12, borderRadius: 20 },
 });

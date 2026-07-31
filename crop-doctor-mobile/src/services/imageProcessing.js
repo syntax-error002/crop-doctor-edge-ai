@@ -27,20 +27,10 @@ export const analyzeImage = async (imageUri) => {
         confidence: data.confidence,
       };
     } else {
-      console.warn('API returned non-200 status, using fallback.');
+      throw new Error('API returned non-200 status');
     }
   } catch (err) {
-    console.warn('Backend inference server not reached, using fallback:', err);
+    console.error('Backend inference failed:', err);
+    throw err;
   }
-
-  // Fallback if backend server is not active
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const randomDisease = DISEASE_KEYS[Math.floor(Math.random() * DISEASE_KEYS.length)];
-      resolve({
-        diseaseId: randomDisease,
-        confidence: (Math.random() * (0.99 - 0.85) + 0.85).toFixed(2),
-      });
-    }, 2000);
-  });
 };

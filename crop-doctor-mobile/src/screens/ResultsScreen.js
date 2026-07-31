@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import treatmentsData from '../data/treatments.json';
 
 const { width } = Dimensions.get('window');
@@ -37,6 +38,30 @@ export default function ResultsScreen({ route, navigation }) {
   
   // Use the scanned image, fallback to placeholder if accessed without a scan
   const imageUri = passedImageUri || 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?q=80&w=800&auto=format&fit=crop';
+
+  const handleSaveReport = async () => {
+    try {
+      const newScan = {
+        id: Date.now().toString(),
+        title: diseaseInfo.crop,
+        status: diseaseInfo.name,
+        conf: `${confPercent}%`,
+        img: imageUri,
+        date: new Date().toISOString()
+      };
+      
+      const existing = await AsyncStorage.getItem('recentScans');
+      const scans = existing ? JSON.parse(existing) : [];
+      scans.unshift(newScan);
+      
+      await AsyncStorage.setItem('recentScans', JSON.stringify(scans));
+      Alert.alert('Success', 'Report saved to your recent scans!');
+      navigation.navigate('Home');
+    } catch (e) {
+      console.error('Failed to save report', e);
+      Alert.alert('Error', 'Could not save the report.');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -156,7 +181,7 @@ export default function ResultsScreen({ route, navigation }) {
         <TouchableOpacity style={styles.likeButton}>
           <Ionicons name="heart-outline" size={24} color="#1a4314" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buyButton} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.buyButton} onPress={handleSaveReport}>
           <Text style={styles.buyButtonText}>Save Report</Text>
         </TouchableOpacity>
       </View>

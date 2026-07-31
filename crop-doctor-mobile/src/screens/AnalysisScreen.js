@@ -27,8 +27,13 @@ export default function AnalysisScreen({ route, navigation }) {
 
     // Run inference and navigate to Results
     const runInference = async () => {
-      const result = await analyzeImage(imageUri);
-      navigation.replace('Results', result);
+      try {
+        const result = await analyzeImage(imageUri);
+        navigation.replace('Results', { ...result, imageUri });
+      } catch (e) {
+        alert("Failed to analyze image. Ensure backend is running.");
+        navigation.goBack();
+      }
     };
 
     if (imageUri) {

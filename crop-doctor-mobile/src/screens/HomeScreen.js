@@ -1,14 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, Dimensions, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
+
+const WEATHER_API_KEY = '1589f7e554414a26b8e142913242110';
 
 export default function HomeScreen({ navigation }) {
   const [activeFilter, setActiveFilter] = useState('All');
   const filters = ['All', 'Maize', 'Tomato', 'Cashew'];
+  
   const [recentScans, setRecentScans] = useState([]);
+  const [weather, setWeather] = useState(null);
+  const [locationName, setLocationName] = useState('Fetching location...');
+  
+  // Crop suggestions based on region
+  const [suggestedCrops, setSuggestedCrops] = useState([
+    { id: 1, name: 'Tomato', img: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?q=80&w=200&auto=format&fit=crop' },
+    { id: 2, name: 'Maize', img: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?q=80&w=200&auto=format&fit=crop' },
+    { id: 3, name: 'Wheat', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=200&auto=format&fit=crop' }
+  ]);
+
+  // Load Recent Scans
+  useFocusEffect(
+    useCallback(() => {
+      const loadScans = async () => {
+        try {
+          const saved = await AsyncStorage.getItem('recentScans');
+          if (saved) setRecentScans(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load scans', e);
+        }
+      };
+      loadScans();
+    }, [])
+  );
+
+  // Fetch Weather and Location on Mount
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setLocationName('Location Access Denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      const lat = location.coords.latitude;
+      const lon = location.coords.longitude;
+
+      try {
+        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${lat},${lon}`);
+        const data = await response.json();
+        setWeather({
+          temp: `${data.current.temp_c}°C`,
+          humidity: `${data.current.humidity}%`,
+          cloud: `${data.current.cloud}%`
+        });
+        setLocationName(data.location.name + ', ' + data.location.country);
+      } catch (error) {
+        console.error("Weather fetch failed", error);
+        setLocationName('Weather Unavailable');
+      }
+    })();
+  }, []);
 
   const handleScan = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -32,8 +91,8 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.profileSection}>
             <Image source={{ uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop' }} style={styles.profileImage} />
             <View>
-              <Text style={styles.helloText}>Hello 👋</Text>
-              <Text style={styles.nameText}>Hi Farmer</Text>
+              <Text style={styles.helloText}>Current Location</Text>
+              <Text style={styles.nameText}>{locationName}</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.bellButton}>
@@ -64,19 +123,19 @@ export default function HomeScreen({ navigation }) {
             
             <View style={styles.heroStatsRow}>
               <View style={styles.heroStatItem}>
-                <Ionicons name="sunny-outline" size={16} color="#f59e0b" />
-                <Text style={styles.heroStatLabel}>Light</Text>
-                <Text style={styles.heroStatValue}>20%</Text>
+                <Ionicons name="cloudy-outline" size={16} color="#6b7280" />
+                <Text style={styles.heroStatLabel}>Cloud</Text>
+                <Text style={styles.heroStatValue}>{weather ? weather.cloud : '--'}</Text>
               </View>
               <View style={styles.heroStatItem}>
                 <Ionicons name="water-outline" size={16} color="#3b82f6" />
                 <Text style={styles.heroStatLabel}>Humid</Text>
-                <Text style={styles.heroStatValue}>40%</Text>
+                <Text style={styles.heroStatValue}>{weather ? weather.humidity : '--'}</Text>
               </View>
               <View style={styles.heroStatItem}>
                 <Ionicons name="thermometer-outline" size={16} color="#ef4444" />
                 <Text style={styles.heroStatLabel}>Temp</Text>
-                <Text style={styles.heroStatValue}>22°C</Text>
+                <Text style={styles.heroStatValue}>{weather ? weather.temp : '--'}</Text>
               </View>
             </View>
           </View>
@@ -86,7 +145,30 @@ export default function HomeScreen({ navigation }) {
           />
         </TouchableOpacity>
 
-        {/* Section Title */}
+        {/* AI Crop Suggestions Section */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Grows well near you</Text>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.suggestionsContainer}>
+          {suggestedCrops.map(crop => (
+            <TouchableOpacity 
+              key={crop.id} 
+              style={styles.suggestionCard}
+              onPress={() => navigation.navigate('CropDetails', { cropName: crop.name, location: locationName, temp: weather?.temp })}
+            >
+              <Image source={{ uri: crop.img }} style={styles.suggestionImg} />
+              <View style={styles.suggestionOverlay}>
+                <Text style={styles.suggestionTitle}>{crop.name}</Text>
+                <View style={styles.aiBadge}>
+                  <Ionicons name="sparkles" size={10} color="#1a4314" />
+                  <Text style={styles.aiBadgeText}>AI Guide</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Recent Scans Section Title */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Recent Scans</Text>
           <TouchableOpacity><Text style={styles.seeAllText}>See all</Text></TouchableOpacity>
@@ -100,18 +182,12 @@ export default function HomeScreen({ navigation }) {
             </View>
           ) : (
             recentScans.map((scan) => (
-              <TouchableOpacity key={scan.id} style={styles.gridCard} onPress={() => navigation.navigate('Results', { diseaseId: scan.status === 'Healthy' ? 'Maize healthy' : 'Tomato leaf curl', confidence: 0.95 })}>
+              <TouchableOpacity key={scan.id} style={styles.gridCard} onPress={() => navigation.navigate('Results', { diseaseId: scan.status === 'Healthy' ? 'Maize healthy' : scan.status, confidence: parseFloat(scan.conf)/100, imageUri: scan.img })}>
                 <Image source={{ uri: scan.img }} style={styles.gridImage} />
                 <TouchableOpacity style={styles.heartIcon}>
-                  <Ionicons name="heart-outline" size={18} color="#1a4314" />
+                  <Ionicons name="heart" size={18} color="#1a4314" />
                 </TouchableOpacity>
                 <View style={styles.gridDetails}>
-                  <View style={styles.gridStatsRow}>
-                    <Ionicons name="sunny-outline" size={12} color="#f59e0b" />
-                    <Text style={styles.gridStatText}>20%</Text>
-                    <Ionicons name="water-outline" size={12} color="#3b82f6" style={{ marginLeft: 8 }}/>
-                    <Text style={styles.gridStatText}>99%</Text>
-                  </View>
                   <Text style={styles.gridCardTitle}>{scan.title}</Text>
                   <View style={styles.gridBottomRow}>
                     <Text style={styles.gridCardSub}>{scan.status}</Text>
@@ -157,7 +233,7 @@ const styles = StyleSheet.create({
   profileSection: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   profileImage: { width: 44, height: 44, borderRadius: 22 },
   helloText: { fontSize: 13, color: '#6b7280', fontWeight: '500' },
-  nameText: { fontSize: 18, fontWeight: '700', color: '#111827' },
+  nameText: { fontSize: 16, fontWeight: '700', color: '#111827' },
   bellButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } },
   
   filterContainer: { paddingHorizontal: 20, marginBottom: 25 },
@@ -176,6 +252,14 @@ const styles = StyleSheet.create({
   heroStatValue: { fontSize: 11, fontWeight: '700', color: '#111827' },
   heroImage: { width: 120, height: 160, position: 'absolute', right: -20, bottom: -20, resizeMode: 'contain', zIndex: 1 },
 
+  suggestionsContainer: { paddingHorizontal: 20, marginBottom: 30, gap: 15 },
+  suggestionCard: { width: 140, height: 100, borderRadius: 16, overflow: 'hidden' },
+  suggestionImg: { width: '100%', height: '100%', resizeMode: 'cover' },
+  suggestionOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.4)', padding: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
+  suggestionTitle: { color: '#fff', fontWeight: '700', fontSize: 14 },
+  aiBadge: { flexDirection: 'row', backgroundColor: '#eef6e1', paddingHorizontal: 6, paddingVertical: 3, borderRadius: 8, alignItems: 'center', gap: 2 },
+  aiBadgeText: { fontSize: 9, fontWeight: '700', color: '#1a4314' },
+
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 15 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
   seeAllText: { fontSize: 14, fontWeight: '600', color: '#1a4314' },
@@ -185,11 +269,9 @@ const styles = StyleSheet.create({
   gridImage: { width: '100%', height: 110, resizeMode: 'cover', borderRadius: 12, marginBottom: 10 },
   heartIcon: { position: 'absolute', top: 20, right: 20, width: 28, height: 28, borderRadius: 14, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
   gridDetails: { marginTop: 4 },
-  gridStatsRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  gridStatText: { fontSize: 11, color: '#6b7280', marginLeft: 4, fontWeight: '600' },
   gridCardTitle: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 4 },
   gridBottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  gridCardSub: { fontSize: 12, color: '#6b7280' },
+  gridCardSub: { fontSize: 11, color: '#6b7280', flex: 1 },
   pillBadge: { backgroundColor: '#1a4314', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10 },
   pillBadgeText: { color: '#fff', fontSize: 10, fontWeight: '700' },
   emptyText: { color: '#64748b', fontStyle: 'italic' },

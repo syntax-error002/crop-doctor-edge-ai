@@ -7,6 +7,7 @@
   [![React Native](https://img.shields.io/badge/React_Native-Expo-61DAFB.svg)](https://reactnative.dev/)
   [![TensorFlow](https://img.shields.io/badge/TensorFlow-EfficientNetV2-FF6F00.svg)](https://www.tensorflow.org/)
   [![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688.svg)](https://fastapi.tiangolo.com/)
+  [![Gemini AI](https://img.shields.io/badge/Gemini_1.5_Flash-Generative_AI-8E75B2.svg)]()
   [![Hackathon](https://img.shields.io/badge/Status-Hackathon_Winner_Ready-brightgreen.svg)]()
 </div>
 
@@ -25,6 +26,9 @@ Built for speed, accuracy, and accessibility, FloraGuard AI processes images ent
 - 🎨 **Premium Glassmorphism UI**: We didn't just build a tool; we built an *experience*. FloraGuard features a stunning, consumer-grade React Native frontend with dynamic scanning animations, intuitive floating navigation, and smooth blur-view glassmorphism.
 - 🛡️ **Offline-First Resilience**: Designed specifically for rural deployment where internet is patchy. The core inference pipeline can function entirely isolated from the cloud.
 - 💊 **Organic Treatment Engine**: Doesn't just identify the problem—it solves it. Instantly maps detected diseases to locally available, organic treatment plans and mitigation strategies.
+- 📍 **Live Micro-Climate Intelligence**: Integrates real-time GPS and WeatherAPI data to automatically detect the farmer's region, serving live local temperature, humidity, and cloud cover metrics.
+- 🤖 **Generative AI Agronomist**: Uses the blazing fast **Gemini 1.5 Flash API** to dynamically generate highly specialized, region-aware crop growing guides tailored exactly to the farmer's current climate conditions.
+- 💾 **Local Edge Database**: Utilizes asynchronous local storage so farmers can save their diagnosis reports and view their historical crop health offline.
 
 ---
 
@@ -36,6 +40,7 @@ We engineered this solution from the ground up to be scalable, modular, and extr
 * **Architecture:** EfficientNetV2 (SOTA balance of parameters and accuracy)
 * **Framework:** TensorFlow / Keras 
 * **Training:** High-performance GPU clusters (Kaggle) utilizing aggressive data augmentation, dropout regularization, and adaptive learning rate schedulers to prevent overfitting.
+* **Generative AI:** Google Gemini 1.5 Flash API for hyper-localized agronomy recommendations.
 
 ### 2. High-Performance Inference Server (FastAPI)
 * **Backend:** Python + FastAPI for asynchronous, non-blocking image processing.
@@ -43,6 +48,7 @@ We engineered this solution from the ground up to be scalable, modular, and extr
 
 ### 3. Cross-Platform Mobile Client (React Native + Expo)
 * **Framework:** Expo & React Native for native iOS/Android compilation.
+* **APIs:** `expo-location` for GPS routing, `AsyncStorage` for local DB, and `WeatherAPI` for climate polling.
 * **Styling:** Custom StyleSheet architecture, `expo-blur` for premium glass aesthetics, and `react-native-reanimated` for 60FPS fluid scanning animations.
 
 ### 4. Web Dashboard (React + Vite)
@@ -63,6 +69,12 @@ graph TD;
     B -->|Lookup| E[(Treatment Database)];
     E -->|Organic Solution| B;
     B --> F[Displays Diagnosis & Cure to Farmer];
+    
+    G[GPS Coordinates] -->|Location| B;
+    B -->|GET Location| H(Weather API);
+    H -->|Climate Data| B;
+    B -->|Prompt| I(Gemini 1.5 Flash);
+    I -->|Generative Guide| B;
 ```
 
 ---
@@ -83,6 +95,7 @@ python -m uvicorn server:app --host 0.0.0.0 --port 8000
 ```bash
 cd crop-doctor-mobile
 npm install
+# Note: You MUST create a .env file in the root of crop-doctor-mobile with EXPO_PUBLIC_GEMINI_API_KEY=your_key
 npx expo start
 ```
 *Scan the QR code with Expo Go on your phone, or press `w` to run the web simulator.*
